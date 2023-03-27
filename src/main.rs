@@ -1,5 +1,19 @@
 fn main() {
-    //App::new().add_system(bla).insert_resource(xx).run();
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_startup_system(setup)
+        .run();
+}
+
+fn setup(mut commands: Commands) {
+    commands.spawn(Camera3dBundle {
+        //
+        ..Default::default()
+    });
+    commands.spawn(PbrBundle {
+        //
+        ..Default::default()
+    });
 }
 
 // //
