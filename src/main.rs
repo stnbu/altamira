@@ -27,11 +27,21 @@ fn setup(
             .looking_at(Vec3::ZERO, Vec3::Y),
         ..Default::default()
     });
+    // commands.spawn(PbrBundle {
+    //     mesh: meshes.add(Mesh::from(shape::UVSphere {
+    //         radius: 0.5 * HUMAN_FOOT,
+    //         ..Default::default()
+    //     })),
+    //     material: materials.add(Color::WHITE.into()),
+    //     ..Default::default()
+    // });
+    let torus = Torus {
+        radius: 0.5 * HUMAN_FOOT,
+        ring_radius: 0.25 * HUMAN_FOOT,
+        ..Default::default()
+    };
     commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(shape::UVSphere {
-            radius: 0.5 * HUMAN_FOOT,
-            ..Default::default()
-        })),
+        mesh: meshes.add(Mesh::from(torus)),
         material: materials.add(Color::WHITE.into()),
         ..Default::default()
     });
