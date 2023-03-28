@@ -1,8 +1,11 @@
 use bevy::{
     pbr::wireframe::{Wireframe, WireframeConfig, WireframePlugin},
     prelude::*,
-    render::{render_resource::WgpuFeatures, settings::WgpuSettings, RenderPlugin},
+    render::{mesh::Indices, render_resource::WgpuFeatures, settings::WgpuSettings, RenderPlugin},
 };
+use wgpu::PrimitiveTopology;
+
+const HUMAN_FOOT: f32 = 100.0;
 
 fn main() {
     App::new()
@@ -17,8 +20,6 @@ fn main() {
         .run();
 }
 
-const HUMAN_FOOT: f32 = 100.0;
-
 fn setup(
     mut commands: Commands,
     mut wireframe_config: ResMut<WireframeConfig>,
@@ -31,14 +32,14 @@ fn setup(
             .looking_at(Vec3::ZERO, Vec3::Y),
         ..Default::default()
     });
-    // commands.spawn(PbrBundle {
-    //     mesh: meshes.add(Mesh::from(shape::UVSphere {
-    //         radius: 0.5 * HUMAN_FOOT,
-    //         ..Default::default()
-    //     })),
-    //     material: materials.add(Color::WHITE.into()),
-    //     ..Default::default()
-    // });
+    commands.spawn(DirectionalLightBundle {
+        directional_light: DirectionalLight {
+            shadows_enabled: false,
+            ..default()
+        },
+        ..default()
+    });
+
     let torus = Torus {
         radius: 0.5 * HUMAN_FOOT,
         ring_radius: 0.25 * HUMAN_FOOT,
@@ -52,24 +53,7 @@ fn setup(
         },
         Wireframe,
     ));
-    //     wireframe_config.global = false;
-
-    commands.spawn(DirectionalLightBundle {
-        directional_light: DirectionalLight {
-            shadows_enabled: false,
-            ..default()
-        },
-        ..default()
-    });
 }
-
-// //
-// use crate::mesh::{Indices, Mesh};
-// use bevy_math::Vec3;
-// use wgpu::PrimitiveTopology;
-use bevy::prelude::*;
-use bevy::render::mesh::Indices;
-use wgpu::PrimitiveTopology;
 
 /// A torus (donut) shape.
 #[derive(Debug, Clone, Copy)]
