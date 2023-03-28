@@ -7,6 +7,16 @@ fn main() {
 
 const HUMAN_FOOT: f32 = 100.0;
 
+/*
+DirectionalLightBundle {
+                directional_light: DirectionalLight {
+                    shadows_enabled: false,
+                    ..default()
+                },
+                ..default()
+            }
+*/
+
 fn setup(
     mut commands: Commands,
     mut materials: ResMut<Assets<StandardMaterial>>,
@@ -24,6 +34,13 @@ fn setup(
         })),
         material: materials.add(Color::WHITE.into()),
         ..Default::default()
+    });
+    commands.spawn(DirectionalLightBundle {
+        directional_light: DirectionalLight {
+            shadows_enabled: false,
+            ..default()
+        },
+        ..default()
     });
 }
 
