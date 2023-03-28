@@ -1,27 +1,31 @@
+use bevy::{
+    pbr::wireframe::{Wireframe, WireframeConfig, WireframePlugin},
+    prelude::*,
+    render::{render_resource::WgpuFeatures, settings::WgpuSettings, RenderPlugin},
+};
+
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins(DefaultPlugins.set(RenderPlugin {
+            wgpu_settings: WgpuSettings {
+                features: WgpuFeatures::POLYGON_MODE_LINE,
+                ..default()
+            },
+        }))
+        .add_plugin(WireframePlugin)
         .add_startup_system(setup)
         .run();
 }
 
 const HUMAN_FOOT: f32 = 100.0;
 
-/*
-DirectionalLightBundle {
-                directional_light: DirectionalLight {
-                    shadows_enabled: false,
-                    ..default()
-                },
-                ..default()
-            }
-*/
-
 fn setup(
     mut commands: Commands,
+    mut wireframe_config: ResMut<WireframeConfig>,
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
+    wireframe_config.global = false;
     commands.spawn(Camera3dBundle {
         transform: Transform::from_translation(Vec3::splat(4.0 * HUMAN_FOOT))
             .looking_at(Vec3::ZERO, Vec3::Y),
@@ -40,11 +44,16 @@ fn setup(
         ring_radius: 0.25 * HUMAN_FOOT,
         ..Default::default()
     };
-    commands.spawn(PbrBundle {
-        mesh: meshes.add(Mesh::from(torus)),
-        material: materials.add(Color::WHITE.into()),
-        ..Default::default()
-    });
+    commands.spawn((
+        PbrBundle {
+            mesh: meshes.add(Mesh::from(torus)),
+            material: materials.add(Color::WHITE.into()),
+            ..Default::default()
+        },
+        Wireframe,
+    ));
+    //     wireframe_config.global = false;
+
     commands.spawn(DirectionalLightBundle {
         directional_light: DirectionalLight {
             shadows_enabled: false,
