@@ -5,13 +5,21 @@ fn main() {
         .run();
 }
 
-fn setup(mut commands: Commands) {
+fn setup(
+    mut commands: Commands,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    mut meshes: ResMut<Assets<Mesh>>,
+) {
     commands.spawn(Camera3dBundle {
-        //
+        transform: Transform::from_xyz(0.0, 0.0, 100.0).looking_at(Vec3::ZERO, Vec3::Y),
         ..Default::default()
     });
     commands.spawn(PbrBundle {
-        //
+        mesh: meshes.add(Mesh::from(shape::UVSphere {
+            radius: 3.0,
+            ..Default::default()
+        })),
+        material: materials.add(Color::WHITE.into()),
         ..Default::default()
     });
 }
