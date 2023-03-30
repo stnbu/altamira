@@ -8,6 +8,8 @@ use bevy::{
 mod torus;
 use torus::*;
 
+const EPSILON: f32 = 0.00001;
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(RenderPlugin {
@@ -55,15 +57,14 @@ fn control(
     // FIXME: Handle "line" vs "pixel" at some point.
     let boom_scale_delta = scroll_evr.iter().fold(0.0_f32, |b, delta| b + delta.y);
     let new_scale = boom.scale - Vec3::ONE * boom_scale_delta / 100.0;
-    let e = 0.00001;
-    if new_scale.x > e && new_scale.y > e && new_scale.z > e {
+    if new_scale.x > EPSILON && new_scale.y > EPSILON && new_scale.z > EPSILON {
         boom.scale = new_scale;
     }
     let mouse_delta = motion_evr
         .iter()
         .fold(Vec2::ZERO, |b, ev| b + Vec2::new(ev.delta.x, ev.delta.y))
         * 0.01;
-    if mouse_delta.length() > e {
+    if mouse_delta.length() > EPSILON {
         if keys.pressed(KeyCode::B) {
             let local_x = boom.local_x();
             let local_y = boom.local_y();
@@ -73,8 +74,8 @@ fn control(
         if keys.pressed(KeyCode::G) {
             let local_x = gimbal.local_x();
             let local_y = gimbal.local_y();
-            gimbal.rotate(Quat::from_axis_angle(local_x, mouse_delta.y));
-            gimbal.rotate(Quat::from_axis_angle(local_y, mouse_delta.x));
+            gimbal.rotate(Quat::from_axis_angle(local_x, -mouse_delta.y));
+            gimbal.rotate(Quat::from_axis_angle(local_y, -mouse_delta.x));
         }
     }
 }
