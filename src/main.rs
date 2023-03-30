@@ -64,7 +64,7 @@ fn control(
 
     // FIXME: Handle "line" vs "pixel" at some point.
     let boom_scale_delta = scroll_evr.iter().fold(0.0_f32, |b, delta| b + delta.y);
-    let new_scale = boom.scale + Vec3::ONE * boom_scale_delta / 100.0;
+    let new_scale = boom.scale - Vec3::ONE * boom_scale_delta / 100.0;
     let e = 0.00001;
     if new_scale.x > e && new_scale.y > e && new_scale.z > e {
         //dbg!(new_scale.length());
@@ -73,7 +73,7 @@ fn control(
     let mouse_delta = motion_evr
         .iter()
         .fold(Vec2::ZERO, |b, ev| b + Vec2::new(ev.delta.x, ev.delta.y))
-        * 0.001;
+        * 0.01;
     if mouse_delta.length() > e {
         let local_x = gimbal.local_x();
         let local_y = gimbal.local_y();
