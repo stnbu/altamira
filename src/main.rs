@@ -67,8 +67,14 @@ fn control(
         if keys.pressed(KeyCode::B) {
             let local_x = boom.local_x();
             let local_y = boom.local_y();
-            boom.rotate(Quat::from_axis_angle(local_x, mouse_delta.y));
-            boom.rotate(Quat::from_axis_angle(local_y, mouse_delta.x));
+            boom.rotate(Quat::from_axis_angle(local_x, -mouse_delta.y));
+            boom.rotate(Quat::from_axis_angle(local_y, -mouse_delta.x));
+        }
+        if keys.pressed(KeyCode::G) {
+            let local_x = gimbal.local_x();
+            let local_y = gimbal.local_y();
+            gimbal.rotate(Quat::from_axis_angle(local_x, mouse_delta.y));
+            gimbal.rotate(Quat::from_axis_angle(local_y, mouse_delta.x));
         }
     }
 }
