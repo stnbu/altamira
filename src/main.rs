@@ -103,7 +103,7 @@ fn setup(
     commands.spawn((
         PbrBundle {
             mesh: meshes.add(Mesh::from(torus)),
-            material: materials.add(Color::WHITE.into()),
+            material: materials.add(Color::rgba(0.0, 0.0, 0.0, 0.0).into()),
             ..Default::default()
         },
         Wireframe,
