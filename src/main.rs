@@ -46,29 +46,28 @@ fn spawn_camera(mut commands: Commands) {
         });
 }
 
-// TODO: how to prohibit translation of boom?
+use bevy::input::{
+    mouse::{MouseButton, MouseButtonInput, MouseMotion, MouseWheel},
+    ButtonState,
+};
 
 fn control(
     mut commands: Commands,
     mut boom_query: Query<&mut Transform, With<CameraBoom>>,
     mut gimbal_query: Query<&mut Transform, (With<CameraGimbal>, Without<CameraBoom>)>,
+    mut scroll_evr: EventReader<MouseWheel>,
     keys: Res<Input<KeyCode>>,
 ) {
     let mut boom = boom_query.get_single_mut().unwrap();
     let mut gimbal = gimbal_query.get_single_mut().unwrap();
-    let mut boom_scale = 1.0;
-    for key in keys.get_pressed() {
-        match key {
-            KeyCode::Up => {
-                boom_scale += 0.01;
-            }
-            KeyCode::Down => {
-                boom_scale -= 0.01;
-            }
-            _ => (),
-        }
+    // FIXME: Handle "line" vs "pixel" at some point.
+    let boom_scale_delta = scroll_evr.iter().fold(0.0_f32, |b, delta| b + delta.y);
+    dbg!(boom_scale_delta);
+    let new_scale = boom.scale + Vec3::ONE * boom_scale_delta / 100.0;
+    let e = 0.00001;
+    if new_scale.x > e && new_scale.y > e && new_scale.z > e {
+        boom.scale = new_scale;
     }
-    boom.scale *= boom_scale;
 }
 
 fn setup(
@@ -103,21 +102,6 @@ fn setup(
 // end torus
 
 /*
-fn scroll_events(
-    mut scroll_evr: EventReader<MouseWheel>,
-) {
-    use bevy::input::mouse::MouseScrollUnit;
-    for ev in scroll_evr.iter() {
-        match ev.unit {
-            MouseScrollUnit::Line => {
-                println!("Scroll (line units): vertical: {}, horizontal: {}", ev.y, ev.x);
-            }
-            MouseScrollUnit::Pixel => {
-                println!("Scroll (pixel units): vertical: {}, horizontal: {}", ev.y, ev.x);
-            }
-        }
-    }
-}
 
 // //
 
