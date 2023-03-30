@@ -1,8 +1,5 @@
-// use bevy::input::{
-//     mouse::{MouseButton, MouseButtonInput, MouseMotion, MouseWheel},
-//     ButtonState,
-// };
 use bevy::{
+    input::mouse::{MouseMotion, MouseWheel},
     pbr::wireframe::{Wireframe, WireframeConfig, WireframePlugin},
     prelude::*,
     render::{render_resource::WgpuFeatures, settings::WgpuSettings, RenderPlugin},
@@ -46,13 +43,7 @@ fn spawn_camera(mut commands: Commands) {
         });
 }
 
-use bevy::input::{
-    mouse::{MouseButton, MouseButtonInput, MouseMotion, MouseWheel},
-    ButtonState,
-};
-
 fn control(
-    mut commands: Commands,
     mut boom_query: Query<&mut Transform, With<CameraBoom>>,
     mut gimbal_query: Query<&mut Transform, (With<CameraGimbal>, Without<CameraBoom>)>,
     mut scroll_evr: EventReader<MouseWheel>,
@@ -61,13 +52,11 @@ fn control(
 ) {
     let mut boom = boom_query.get_single_mut().unwrap();
     let mut gimbal = gimbal_query.get_single_mut().unwrap();
-
     // FIXME: Handle "line" vs "pixel" at some point.
     let boom_scale_delta = scroll_evr.iter().fold(0.0_f32, |b, delta| b + delta.y);
     let new_scale = boom.scale - Vec3::ONE * boom_scale_delta / 100.0;
     let e = 0.00001;
     if new_scale.x > e && new_scale.y > e && new_scale.z > e {
-        //dbg!(new_scale.length());
         boom.scale = new_scale;
     }
     let mouse_delta = motion_evr
@@ -75,11 +64,12 @@ fn control(
         .fold(Vec2::ZERO, |b, ev| b + Vec2::new(ev.delta.x, ev.delta.y))
         * 0.01;
     if mouse_delta.length() > e {
-        let local_x = gimbal.local_x();
-        let local_y = gimbal.local_y();
-        boom.rotate(Quat::from_axis_angle(local_x, mouse_delta.y));
-        boom.rotate(Quat::from_axis_angle(local_y, mouse_delta.x));
-        dbg!(mouse_delta.length());
+        if keys.pressed(KeyCode::B) {
+            let local_x = boom.local_x();
+            let local_y = boom.local_y();
+            boom.rotate(Quat::from_axis_angle(local_x, mouse_delta.y));
+            boom.rotate(Quat::from_axis_angle(local_y, mouse_delta.x));
+        }
     }
 }
 
@@ -112,30 +102,3 @@ fn setup(
         Wireframe,
     ));
 }
-// end torus
-
-/*
-
-// //
-
-fn mouse_motion(
-    mut motion_evr: EventReader<MouseMotion>,
-) {
-    for ev in motion_evr.iter() {
-        println!("Mouse moved: X: {} px, Y: {} px", ev.delta.x, ev.delta.y);
-    }
-}
-
-
-*/
-
-/*
-+                let frame_time = time.delta_seconds() * 60.0;
-+                rotation *= keys_scaling * frame_time;
-+                let local_x = transform.local_x();
-+                let local_y = transform.local_y();
-+                let local_z = transform.local_z();
-+                transform.rotate(Quat::from_axis_angle(local_x, rotation.x));
-+                transform.rotate(Quat::from_axis_angle(local_z, rotation.z));
-+                transform.rotate(Quat::from_axis_angle(local_y, rotation.y));
-*/
