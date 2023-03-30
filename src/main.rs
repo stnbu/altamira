@@ -59,10 +59,10 @@ fn control(
     for key in keys.get_pressed() {
         match key {
             KeyCode::Up => {
-                boom_scale += 0.1;
+                boom_scale += 0.01;
             }
             KeyCode::Down => {
-                boom_scale -= 0.1;
+                boom_scale -= 0.01;
             }
             _ => (),
         }
