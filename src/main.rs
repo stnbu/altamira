@@ -57,16 +57,29 @@ fn control(
     mut gimbal_query: Query<&mut Transform, (With<CameraGimbal>, Without<CameraBoom>)>,
     mut scroll_evr: EventReader<MouseWheel>,
     keys: Res<Input<KeyCode>>,
+    mut motion_evr: EventReader<MouseMotion>,
 ) {
     let mut boom = boom_query.get_single_mut().unwrap();
     let mut gimbal = gimbal_query.get_single_mut().unwrap();
+
     // FIXME: Handle "line" vs "pixel" at some point.
     let boom_scale_delta = scroll_evr.iter().fold(0.0_f32, |b, delta| b + delta.y);
-    dbg!(boom_scale_delta);
     let new_scale = boom.scale + Vec3::ONE * boom_scale_delta / 100.0;
     let e = 0.00001;
     if new_scale.x > e && new_scale.y > e && new_scale.z > e {
+        //dbg!(new_scale.length());
         boom.scale = new_scale;
+    }
+    let mouse_delta = motion_evr
+        .iter()
+        .fold(Vec2::ZERO, |b, ev| b + Vec2::new(ev.delta.x, ev.delta.y))
+        * 0.001;
+    if mouse_delta.length() > e {
+        let local_x = gimbal.local_x();
+        let local_y = gimbal.local_y();
+        boom.rotate(Quat::from_axis_angle(local_x, mouse_delta.y));
+        boom.rotate(Quat::from_axis_angle(local_y, mouse_delta.x));
+        dbg!(mouse_delta.length());
     }
 }
 
@@ -114,4 +127,15 @@ fn mouse_motion(
 }
 
 
+*/
+
+/*
++                let frame_time = time.delta_seconds() * 60.0;
++                rotation *= keys_scaling * frame_time;
++                let local_x = transform.local_x();
++                let local_y = transform.local_y();
++                let local_z = transform.local_z();
++                transform.rotate(Quat::from_axis_angle(local_x, rotation.x));
++                transform.rotate(Quat::from_axis_angle(local_z, rotation.z));
++                transform.rotate(Quat::from_axis_angle(local_y, rotation.y));
 */
