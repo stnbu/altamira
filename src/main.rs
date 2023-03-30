@@ -100,12 +100,25 @@ fn setup(
         ring_radius: 0.25,
         ..Default::default()
     };
-    commands.spawn((
-        PbrBundle {
-            mesh: meshes.add(Mesh::from(torus)),
-            material: materials.add(Color::rgba(0.0, 0.0, 0.0, 0.0).into()),
-            ..Default::default()
-        },
-        Wireframe,
-    ));
+    use bevy::render::mesh::VertexAttributeValues;
+    //
+    let mut colorful_cube = Mesh::from(torus);
+    if let Some(VertexAttributeValues::Float32x3(positions)) =
+        colorful_cube.attribute(Mesh::ATTRIBUTE_POSITION)
+    {
+        let colors: Vec<[f32; 4]> = positions
+            .iter()
+            .map(|[r, g, b]| [(1. - *r) / 2., (1. - *g) / 2., (1. - *b) / 2., 1.])
+            .collect();
+        colorful_cube.insert_attribute(Mesh::ATTRIBUTE_COLOR, colors);
+    }
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(colorful_cube),
+        // This is the default color, but note that vertex colors are
+        // multiplied by the base color, so you'll likely want this to be
+        // white if using vertex colors.
+        material: materials.add(Color::rgb(1., 1., 1.).into()),
+        transform: Transform::from_xyz(0.0, 0.5, 0.0),
+        ..default()
+    });
 }
