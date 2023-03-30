@@ -10,8 +10,6 @@ use bevy::{
 
 use wgpu::PrimitiveTopology;
 
-const HUMAN_FOOT: f32 = 100.0;
-
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(RenderPlugin {
@@ -88,8 +86,8 @@ fn setup(
     });
 
     let torus = Torus {
-        radius: 0.5 * HUMAN_FOOT,
-        ring_radius: 0.25 * HUMAN_FOOT,
+        radius: 0.5,
+        ring_radius: 0.25,
         ..Default::default()
     };
     commands.spawn((
