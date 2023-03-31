@@ -133,7 +133,6 @@ name = "altamira"
 version = "0.1.0"
 dependencies = [
  "bevy",
- "wgpu",
 ]
 
 [[package]]
