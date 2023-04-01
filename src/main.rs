@@ -30,7 +30,8 @@ fn spawn_camera(mut commands: Commands) {
         .with_children(|children| {
             children.spawn((
                 Camera3dBundle {
-                    transform: Transform::from_translation(Vec3::Z).looking_at(Vec3::ZERO, Vec3::Y),
+                    transform: Transform::from_translation(Vec3::X * 2.0 + Vec3::Y * 0.2)
+                        .looking_at(Vec3::ZERO, Vec3::Y),
                     ..Default::default()
                 },
                 CameraGimbal,
