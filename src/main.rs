@@ -113,15 +113,35 @@ fn setup(
     commands.spawn(PbrBundle {
         mesh: meshes.add(
             shape::UVSphere {
-                radius: 0.05,
+                radius: 0.025,
                 ..Default::default()
             }
             .into(),
         ),
-        material: materials.add(Color::GREEN.into()),
-        transform: Transform::from_translation(Vec3::Y),
+        material: materials.add(Color::WHITE.into()),
         ..Default::default()
     });
+
+    for (color, axis) in [
+        (Color::GREEN, Vec3::Y),
+        (Color::BLUE, Vec3::Z),
+        (Color::RED, Vec3::X),
+    ] {
+        for i in 1..4 {
+            commands.spawn(PbrBundle {
+                mesh: meshes.add(
+                    shape::UVSphere {
+                        radius: 0.02,
+                        ..Default::default()
+                    }
+                    .into(),
+                ),
+                material: materials.add(color.into()),
+                transform: Transform::from_translation(axis * i as f32),
+                ..Default::default()
+            });
+        }
+    }
 
     commands.spawn(PbrBundle {
         mesh: meshes.add(
@@ -133,7 +153,6 @@ fn setup(
             .into(),
         ),
         material,
-        transform: Transform::from_xyz(0.0, 0.5, 0.0),
         ..Default::default()
     });
 }
