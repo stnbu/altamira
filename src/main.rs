@@ -36,10 +36,6 @@ fn spawn_camera(mut commands: Commands) {
                 CameraGimbal,
             ));
         });
-
-    for c in get_colors(7) {
-        dbg!(c);
-    }
 }
 
 fn get_colors(n: u64) -> Vec<[u8; 4]> {
@@ -112,6 +108,19 @@ fn setup(
     let material = materials.add(StandardMaterial {
         base_color_texture: Some(images.add(texture())),
         ..default()
+    });
+
+    commands.spawn(PbrBundle {
+        mesh: meshes.add(
+            shape::UVSphere {
+                radius: 0.05,
+                ..Default::default()
+            }
+            .into(),
+        ),
+        material: materials.add(Color::GREEN.into()),
+        transform: Transform::from_translation(Vec3::Y),
+        ..Default::default()
     });
 
     commands.spawn(PbrBundle {
