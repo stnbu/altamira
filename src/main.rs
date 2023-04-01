@@ -99,6 +99,16 @@ fn setup(
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
     commands.spawn(DirectionalLightBundle {
+        transform: Transform::default().looking_at(Vec3::new(1.0, 1.0, 1.0), Vec3::Y),
+        directional_light: DirectionalLight {
+            shadows_enabled: false,
+            ..Default::default()
+        },
+        ..Default::default()
+    });
+
+    commands.spawn(DirectionalLightBundle {
+        transform: Transform::default().looking_at(Vec3::new(-1.0, -1.0, -1.0), Vec3::Y),
         directional_light: DirectionalLight {
             shadows_enabled: false,
             ..Default::default()
