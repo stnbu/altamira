@@ -113,7 +113,7 @@ fn setup(
     commands.spawn(PbrBundle {
         mesh: meshes.add(
             shape::UVSphere {
-                radius: 0.025,
+                radius: 0.015,
                 ..Default::default()
             }
             .into(),
@@ -131,7 +131,7 @@ fn setup(
             commands.spawn(PbrBundle {
                 mesh: meshes.add(
                     shape::UVSphere {
-                        radius: 0.02,
+                        radius: 0.01,
                         ..Default::default()
                     }
                     .into(),

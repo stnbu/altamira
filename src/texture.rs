@@ -4,9 +4,9 @@ use bevy::render::render_resource::*;
 pub fn texture() -> Image {
     const TEXTURE_SIZE: usize = 8;
     let texture_data: [u8; 256] = [
-        255, 255, 255, 255, //
-        0, 0, 0, 255, //
-        0, 0, 0, 255, //
+        255, 0, 0, 255, //
+        0, 255, 0, 255, //
+        0, 0, 255, 255, //
         0, 0, 0, 255, //
         0, 0, 0, 255, //
         0, 0, 0, 255, //
