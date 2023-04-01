@@ -37,9 +37,6 @@ fn spawn_camera(mut commands: Commands) {
             ));
         });
 
-    for _ in generate_colors(5) {
-        //
-    }
     for c in get_colors(7) {
         dbg!(c);
     }
@@ -50,9 +47,9 @@ fn get_colors(n: u64) -> Vec<[u8; 4]> {
     for i in 0..n {
         let x = (n - i) as f32 / n as f32;
 
-        let red = (x - 0.0 * TAU / 3.0).sin() + 0.75;
-        let green = (x - 1.0 * TAU / 3.0).sin() + 0.75;
-        let blue = (x - 2.0 * TAU / 3.0).sin() + 0.75;
+        let red = (x - 0.0 * TAU / 3.0).sin() + 0.5;
+        let green = (x - 1.0 * TAU / 3.0).sin() + 0.5;
+        let blue = (x - 2.0 * TAU / 3.0).sin() + 0.5;
 
         let red = (red * 255.0) as u8;
         let blue = (blue * 255.0) as u8;
