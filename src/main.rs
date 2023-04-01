@@ -47,15 +47,15 @@ fn get_colors(n: u64) -> Vec<[u8; 4]> {
     for i in 0..n {
         let x = (n - i) as f32 / n as f32;
 
-        let red = (x - 0.0 * TAU / 3.0).sin() + 0.5;
-        let green = (x - 1.0 * TAU / 3.0).sin() + 0.5;
-        let blue = (x - 2.0 * TAU / 3.0).sin() + 0.5;
+        let red = 0.5 * (x - 0.0 * TAU / 3.0).sin() + 0.5;
+        let green = 0.5 * (x - 1.0 * TAU / 3.0).sin() + 0.5;
+        let blue = 0.5 * (x - 2.0 * TAU / 3.0).sin() + 0.5;
 
         let red = (red * 255.0) as u8;
-        let blue = (blue * 255.0) as u8;
         let green = (green * 255.0) as u8;
+        let blue = (blue * 255.0) as u8;
         let alpha = 255;
-        colors.push([red, blue, green, alpha]);
+        colors.push([red, green, blue, alpha]);
     }
     colors
 }
