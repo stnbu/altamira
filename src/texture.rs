@@ -30,7 +30,7 @@ pub fn texture() -> Image {
 
 //
 
-fn generate_colors(n: u8) -> Vec<[u8; 3]> {
+pub fn generate_colors(n: u8) -> Vec<[u8; 3]> {
     let intensity = 255 / (n - 1);
     let mut colors = Vec::new();
     for i in 0..n {
