@@ -27,3 +27,17 @@ pub fn texture() -> Image {
         TextureFormat::Rgba8UnormSrgb,
     )
 }
+
+//
+
+fn generate_colors(n: u8) -> Vec<[u8; 3]> {
+    let intensity = 255 / (n - 1);
+    let mut colors = Vec::new();
+    for i in 0..n {
+        let r = (i as u16 * intensity as u16) as u8;
+        let g = (255 - i as u16 * intensity as u16) as u8;
+        let b = ((i as f32 + 0.5) as u16 * intensity as u16) as u8;
+        colors.push([r, g, b]);
+    }
+    colors
+}

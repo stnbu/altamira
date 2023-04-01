@@ -1,7 +1,6 @@
 use bevy::{
     input::mouse::{MouseMotion, MouseWheel},
     prelude::*,
-    render::{render_resource::WgpuFeatures, settings::WgpuSettings, RenderPlugin},
 };
 
 mod texture;
