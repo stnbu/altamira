@@ -4,11 +4,8 @@ use bevy::{
 };
 use std::f32::consts::TAU;
 
-// mod texture;
-// use texture::*;
-
 const POLOIDAL: usize = 8;
-const TOROIDAL: usize = 8;
+const TOROIDAL: usize = 128;
 
 const EPSILON: f32 = 0.00001;
 
