@@ -58,7 +58,9 @@ fn get_colors(n: u64) -> Vec<[u8; 4]> {
 }
 
 fn get_flat_index(x: usize, y: usize) -> usize {
-    y * POLOIDAL + x * TOROIDAL * 4
+    let hmm = (y * POLOIDAL * 4) + (x * 4);
+    dbg!(hmm);
+    hmm
 }
 
 fn control(
@@ -124,7 +126,10 @@ fn setup(
         .map(|i| if i % 4 == 3 { 255 } else { 0 })
         .collect();
 
-    pixels[get_flat_index(0, 0)..4].copy_from_slice(&[255, 0, 0, 255]);
+    let offset = get_flat_index(0, 0);
+    pixels[offset..offset + 4].copy_from_slice(&[255, 0, 0, 255]);
+    let offset = get_flat_index(0, 1);
+    pixels[offset..offset + 4].copy_from_slice(&[0, 255, 0, 255]);
 
     let material = materials.add(StandardMaterial {
         base_color_texture: Some(images.add(texture(pixels))),
