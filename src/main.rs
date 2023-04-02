@@ -193,8 +193,8 @@ pub fn texture(pixels: Vec<u8>) -> Image {
     //assert!(POLOIDAL * TOROIDAL * 4 == pixels.len() as u32);
     Image::new_fill(
         Extent3d {
-            width: TOROIDAL as u32,
-            height: POLOIDAL as u32,
+            width: POLOIDAL as u32,
+            height: TOROIDAL as u32,
             depth_or_array_layers: 1,
         },
         TextureDimension::D2,
