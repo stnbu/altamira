@@ -35,7 +35,7 @@ fn spawn_camera(mut commands: Commands) {
         .with_children(|children| {
             children.spawn((
                 Camera3dBundle {
-                    transform: Transform::from_translation(Vec3::splat(4.0))
+                    transform: Transform::from_translation(Vec3::splat(2.5))
                         .looking_at(Vec3::ZERO, Vec3::Y),
                     ..Default::default()
                 },
@@ -76,7 +76,6 @@ fn get_colors(n: u64) -> Vec<[u8; 4]> {
         let blue = (blue * 255.0) as u8;
         let alpha = 255;
         let color = [red, green, blue, alpha];
-        dbg!(color);
         colors.push(color);
     }
     colors
