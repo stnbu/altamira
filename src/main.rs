@@ -1,11 +1,12 @@
+use bevy::render::render_resource::*;
 use bevy::{
     input::mouse::{MouseMotion, MouseWheel},
     prelude::*,
 };
 use std::f32::consts::TAU;
 
-const TOROIDAL: usize = 128;
-const POLOIDAL: usize = 8;
+const TOROIDAL: usize = 23;
+const POLOIDAL: usize = 23;
 
 const EPSILON: f32 = 0.00001;
 
@@ -23,19 +24,41 @@ struct CameraGimbal;
 
 #[derive(Component)]
 struct CameraBoom;
-
+use bevy::prelude::SpatialBundle;
 fn spawn_camera(mut commands: Commands) {
+    commands.spawn(SpatialBundle {
+        visibility: Visibility::Visible,
+        ..Default::default()
+    });
     commands
-        .spawn((TransformBundle::default(), CameraBoom))
+        .spawn((SpatialBundle::default(), CameraBoom))
         .with_children(|children| {
             children.spawn((
                 Camera3dBundle {
-                    transform: Transform::from_translation(Vec3::X * 2.0 + Vec3::Y * 0.2)
+                    transform: Transform::from_translation(Vec3::splat(4.0))
                         .looking_at(Vec3::ZERO, Vec3::Y),
                     ..Default::default()
                 },
                 CameraGimbal,
             ));
+            children.spawn(DirectionalLightBundle {
+                transform: Transform::default().looking_at(Vec3::new(1.0, 1.0, 1.0), Vec3::Y),
+                visibility: Visibility::Visible,
+                directional_light: DirectionalLight {
+                    shadows_enabled: false,
+                    ..Default::default()
+                },
+                ..Default::default()
+            });
+            children.spawn(DirectionalLightBundle {
+                transform: Transform::default().looking_at(Vec3::new(-1.0, -1.0, 1.0), Vec3::Y),
+                visibility: Visibility::Visible,
+                directional_light: DirectionalLight {
+                    shadows_enabled: false,
+                    ..Default::default()
+                },
+                ..Default::default()
+            });
         });
 }
 
@@ -44,23 +67,23 @@ fn get_colors(n: u64) -> Vec<[u8; 4]> {
     for i in 0..n {
         let x = (n - i) as f32 / n as f32;
 
-        let red = 0.5 * (x - 0.0 * TAU / 3.0).sin() + 0.5;
-        let green = 0.5 * (x - 1.0 * TAU / 3.0).sin() + 0.5;
-        let blue = 0.5 * (x - 2.0 * TAU / 3.0).sin() + 0.5;
+        let red = 0.5 * (x - 1.0 * TAU / 3.0).sin() + 0.5;
+        let green = 0.5 * (x - 2.0 * TAU / 3.0).sin() + 0.5;
+        let blue = 0.5 * (x - 3.0 * TAU / 3.0).sin() + 0.5;
 
         let red = (red * 255.0) as u8;
         let green = (green * 255.0) as u8;
         let blue = (blue * 255.0) as u8;
         let alpha = 255;
-        colors.push([red, green, blue, alpha]);
+        let color = [red, green, blue, alpha];
+        dbg!(color);
+        colors.push(color);
     }
     colors
 }
 
 fn get_flat_index(x: usize, y: usize) -> usize {
-    let hmm = (y * TOROIDAL * 4) + (x * 4);
-    dbg!(hmm);
-    hmm
+    (y * TOROIDAL * 4) + (x * 4)
 }
 
 fn control(
@@ -104,32 +127,14 @@ fn setup(
     mut materials: ResMut<Assets<StandardMaterial>>,
     mut meshes: ResMut<Assets<Mesh>>,
 ) {
-    commands.spawn(DirectionalLightBundle {
-        transform: Transform::default().looking_at(Vec3::new(1.0, 1.0, 1.0), Vec3::Y),
-        directional_light: DirectionalLight {
-            shadows_enabled: false,
-            ..Default::default()
-        },
-        ..Default::default()
-    });
-
-    commands.spawn(DirectionalLightBundle {
-        transform: Transform::default().looking_at(Vec3::new(-1.0, -1.0, -1.0), Vec3::Y),
-        directional_light: DirectionalLight {
-            shadows_enabled: false,
-            ..Default::default()
-        },
-        ..Default::default()
-    });
-
     let mut pixels: Vec<u8> = (0..(POLOIDAL * TOROIDAL * 4))
         .map(|i| if i % 4 == 3 { 255 } else { 0 })
         .collect();
-
-    let offset = get_flat_index(0, 0);
-    pixels[offset..offset + 4].copy_from_slice(&[255, 0, 0, 255]);
-    let offset = get_flat_index(0, 1);
-    pixels[offset..offset + 4].copy_from_slice(&[0, 255, 0, 255]);
+    let colors = get_colors(TOROIDAL as u64);
+    for i in 0..TOROIDAL {
+        let offset = get_flat_index(i, i);
+        pixels[offset..offset + 4].copy_from_slice(colors.get(i).unwrap());
+    }
 
     let material = materials.add(StandardMaterial {
         base_color_texture: Some(images.add(texture(pixels))),
@@ -183,14 +188,8 @@ fn setup(
     });
 }
 
-//
-
-use bevy::render::render_resource::*;
-
 pub fn texture(pixels: Vec<u8>) -> Image {
-    dbg!(TOROIDAL * POLOIDAL * 4);
-    dbg!(pixels.len());
-    //assert!(TOROIDAL * POLOIDAL * 4 == pixels.len() as u32);
+    assert!(TOROIDAL * POLOIDAL * 4 == pixels.len());
     Image::new_fill(
         Extent3d {
             width: TOROIDAL as u32,
