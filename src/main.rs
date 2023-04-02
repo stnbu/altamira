@@ -4,8 +4,11 @@ use bevy::{
 };
 use std::f32::consts::TAU;
 
-mod texture;
-use texture::*;
+// mod texture;
+// use texture::*;
+
+const POLOIDAL: usize = 8;
+const TOROIDAL: usize = 8;
 
 const EPSILON: f32 = 0.00001;
 
@@ -55,6 +58,10 @@ fn get_colors(n: u64) -> Vec<[u8; 4]> {
         colors.push([red, green, blue, alpha]);
     }
     colors
+}
+
+fn get_flat_index(x: usize, y: usize) -> usize {
+    y * POLOIDAL + x * TOROIDAL * 4
 }
 
 fn control(
@@ -116,33 +123,14 @@ fn setup(
         ..Default::default()
     });
 
+    let mut pixels: Vec<u8> = (0..(TOROIDAL * POLOIDAL * 4))
+        .map(|i| if i % 4 == 3 { 255 } else { 0 })
+        .collect();
+
+    pixels[get_flat_index(0, 0)..4].copy_from_slice(&[255, 0, 0, 255]);
+
     let material = materials.add(StandardMaterial {
-        base_color_texture: Some(images.add(texture(&[
-            &[
-                [255, 0, 0, 255], //
-                [0, 0, 0, 255],   //
-                [0, 0, 0, 255],   //
-                [0, 0, 0, 255],   //
-            ],
-            &[
-                [0, 0, 0, 255], //
-                [0, 0, 0, 255], //
-                [0, 0, 0, 255], //
-                [0, 0, 0, 255], //
-            ],
-            &[
-                [0, 0, 0, 255], //
-                [0, 0, 0, 255], //
-                [0, 0, 0, 255], //
-                [0, 0, 0, 255], //
-            ],
-            &[
-                [0, 0, 0, 255],   //
-                [0, 0, 0, 255],   //
-                [0, 0, 0, 255],   //
-                [0, 0, 255, 255], //
-            ],
-        ]))),
+        base_color_texture: Some(images.add(texture(pixels))),
         ..default()
     });
 
@@ -191,4 +179,24 @@ fn setup(
         material,
         ..Default::default()
     });
+}
+
+//
+
+use bevy::render::render_resource::*;
+
+pub fn texture(pixels: Vec<u8>) -> Image {
+    dbg!(POLOIDAL * TOROIDAL * 4);
+    dbg!(pixels.len());
+    //assert!(POLOIDAL * TOROIDAL * 4 == pixels.len() as u32);
+    Image::new_fill(
+        Extent3d {
+            width: TOROIDAL as u32,
+            height: POLOIDAL as u32,
+            depth_or_array_layers: 1,
+        },
+        TextureDimension::D2,
+        pixels.as_slice(),
+        TextureFormat::Rgba8UnormSrgb,
+    )
 }
