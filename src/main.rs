@@ -4,8 +4,8 @@ use bevy::{
 };
 use std::f32::consts::TAU;
 
-const TOROIDAL: usize = 8;
-const POLOIDAL: usize = 128;
+const TOROIDAL: usize = 128;
+const POLOIDAL: usize = 8;
 
 const EPSILON: f32 = 0.00001;
 
